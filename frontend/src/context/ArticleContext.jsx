@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
+
 // Create the context
 const ArticleContext = createContext(undefined);
 
@@ -9,14 +10,18 @@ export const ArticleProvider = ({ children }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [selectedArticle, setSelectedArticle] = useState(null);
 
-  const addArticle = (article) => {
-    setArticles((prevArticles) => [...prevArticles, article]);
+  const addArticle = (newArticles) => {
+    if (Array.isArray(newArticles)) {
+      setArticles((prevArticles) => [...prevArticles, ...newArticles]);
+    } else {
+      setArticles((prevArticles) => [...prevArticles, newArticles]);
+    }
   };
 
   const updateArticle = (ArticleData) => {
     setArticles((prevArticles) =>
       prevArticles.map((article) => {
-        return article.id === ArticleData.id ? ArticleData : article
+        return article.article_id === ArticleData.article_id ? ArticleData : article
       })
     );
   };
@@ -25,13 +30,13 @@ export const ArticleProvider = ({ children }) => {
     //delete Artical form articles
     setArticles((prevArticles) =>
       prevArticles.filter((articles) =>
-        articles.id !== deleteid
+        articles.article_id !== deleteid
       )
     )
   }
 
   return (
-    <ArticleContext.Provider value={{ articles, addArticle, setSelectedArticle, selectedArticle, updateArticle, setIsEditing, isEditing, deleteArticle }}>
+    <ArticleContext.Provider value={{ articles, addArticle, setSelectedArticle, selectedArticle, updateArticle, setIsEditing, isEditing, deleteArticle, setArticles }}>
       {children}
     </ArticleContext.Provider>
   );
